@@ -43,3 +43,14 @@ python -c "import json; json.load(open('_manifest.json', encoding='utf-8')); pri
 | [HTML 参考](html-reference.md) | 页面结构、CSS 选择器、解析逻辑 |
 | [数据模型](models.md) | Pydantic 模型定义和字段说明 |
 | [添加新 Tool](adding-tools.md) | 分步指南 + 代码模板 |
+
+## 外部参考
+
+| 资源 | 链接 |
+|------|------|
+| Bangumi OpenAPI v0 完整规范 | https://github.com/bangumi/server/blob/master/openapi/v0.yaml |
+| Bangumi API 使用约定（UA 要求等） | https://github.com/bangumi/api/blob/master/docs-raw/user%20agent.md |
+| MaiBot 插件开发指南 | https://docs.mai-mai.org/plugin/vibe-coding |
+| MaiBot Manifest 字段规范 | https://docs.mai-mai.org/plugin/manifest |
+| MaiBot Tool 组件文档 | https://docs.mai-mai.org/plugin/tools |
+| MaiBot 配置管理文档 | https://docs.mai-mai.org/plugin/config |

@@ -64,6 +64,11 @@ python -c "import json; json.load(open('_manifest.json', encoding='utf-8')); pri
 
 `_manifest.json` 声明：httpx>=0.25.0、beautifulsoup4>=4.11.0、lxml>=4.9.0。pydantic 由 MaiBot 主程序提供，无需声明。
 
+## 外部参考
+
+- Bangumi OpenAPI v0 规范：https://github.com/bangumi/server/blob/master/openapi/v0.yaml
+- MaiBot 插件开发指南：https://docs.mai-mai.org/plugin/vibe-coding
+
 ## Git
 
 独立仓库，主分支 `main`，不修改 MaiBot 主程序代码。
