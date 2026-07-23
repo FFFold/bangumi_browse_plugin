@@ -61,7 +61,9 @@ async def get_subject(subject_id: int) -> SubjectDetail
 async def get_subject_persons(subject_id: int) -> list[SubjectPerson]
 ```
 
-每人包含 `relation`（职位关系如"监督"）、`positions`（具体职位）、`career`（职业标签）。
+每人包含 `relation`（职位关系如"导演"）、`eps`（负责集数，如 "1-2"）、`career`（职业标签）、`type`（个人/组织/组合）。
+
+注意：该端点**不返回 CV 声优数据**，CV 数据在 `/subjects/{id}/characters` 端点。
 
 ### `browse_subjects` → `GET /v0/subjects`
 

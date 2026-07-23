@@ -38,10 +38,12 @@
 |------|------|------|
 | `id` | `int` | 人员 ID |
 | `name` | `str` | 姓名 |
-| `relation` | `str` | 职位关系（如"监督"、"脚本"） |
-| `type` | `str` | 人员类型（已从 int 转换） |
-| `positions` | `list[str]` | 具体职位 |
-| `career` | `list[str]` | 职业标签 |
+| `images` | `ImageInfo \| None` | 头像 |
+| `relation` | `str` | 职位关系（如"导演"、"脚本"） |
+| `type` | `str` | 人员类型：个人/组织/组合（已从 int 转换） |
+| `career` | `list[str]` | 职业标签（writer/producer/artist/illustrator） |
+| `positions` | `list[str]` | 具体职位（/persons 端点不返回此字段，保留备用） |
+| `eps` | `str` | 负责集数（如 "1-2"、"3,5"） |
 
 ### Episode — 剧集项
 
@@ -113,4 +115,6 @@ class ReviewDetail:
 
 ## 类型转换
 
-`Subject` 和 `SubjectPerson` 的 `type` 字段使用 `field_validator("type", mode="before")` 自动将 API 返回的 int 转为字符串。映射关系见 `_SUBJECT_TYPE_MAP`。
+- `Subject` 的 `type` 使用 `_SUBJECT_TYPE_MAP`：1→book, 2→anime, 3→music, 4→game, 6→real
+- `SubjectPerson` 的 `type` 使用独立的 `_PERSON_TYPE_MAP`：1→个人, 2→组织, 3→组合
+- 人员职位排序由 `_PERSON_RELATION_PRIORITY` 控制，覆盖 75 种常见职位名

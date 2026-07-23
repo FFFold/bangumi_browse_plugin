@@ -18,6 +18,7 @@ from .bangumi_html import (
     fetch_review_detail,
     fetch_reviews_list,
 )
+from .models import _PERSON_RELATION_PRIORITY
 
 
 _CATEGORY_NAME_MAP: dict[str, int] = {
@@ -276,7 +277,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
     @Tool(
         "get_bangumi_subject_persons",
         description=(
-            "获取某部作品的制作人员阵容，包括监督、脚本、音乐、原画、CV 等。"
+            "获取某部作品的制作人员阵容，包括监督、脚本、音乐、原画等。"
             "当用户想了解某部作品是谁制作的、或谈论制作团队时使用。"
         ),
         parameters=[
@@ -286,9 +287,19 @@ class BangumiBrowsePlugin(MaiBotPlugin):
                 description="Bangumi 条目 ID",
                 required=True,
             ),
+            ToolParameterInfo(
+                name="relation",
+                param_type=ToolParamType.STRING,
+                description="按职能筛选，如 导演、脚本、原画。不传则返回全部人员",
+                required=False,
+            ),
         ],
     )
     async def handle_get_persons(self, subject_id: int = 0, **kwargs: Any) -> dict[str, str]:
+        def _priority(rel: str) -> int:
+            return _PERSON_RELATION_PRIORITY.get(rel, 70)
+
+        relation_filter = kwargs.pop("relation", None)
         del kwargs
         try:
             if not self._api:
@@ -297,19 +308,66 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             if not persons:
                 return {"name": "get_bangumi_subject_persons", "content": "未找到该条目的人员信息。"}
 
-            by_relation: dict[str, list[str]] = {}
+            if relation_filter:
+                persons = [p for p in persons if p.relation == relation_filter]
+                if not persons:
+                    return {"name": "get_bangumi_subject_persons", "content": f"未找到职能为「{relation_filter}」的人员。"}
+
+            person_info: dict[int, dict[str, Any]] = {}
+            by_relation: dict[str, list[tuple[int, str]]] = {}
+
             for p in persons:
+                pid = p.id
                 rel = p.relation or "其他"
-                line = p.name
-                if p.positions:
-                    line += f"（{'/'.join(p.positions)}）"
-                by_relation.setdefault(rel, []).append(line)
+                eps = p.eps
+
+                if pid not in person_info:
+                    person_info[pid] = {
+                        "name": p.name,
+                        "type": p.type,
+                        "roles": {},
+                    }
+                person_info[pid]["roles"][rel] = eps
+                by_relation.setdefault(rel, []).append((pid, eps))
 
             lines = ["制作人员："]
-            for rel, names in by_relation.items():
+            for rel in sorted(by_relation.keys(), key=_priority):
+                entries = by_relation[rel]
+                seen_pids: set[int] = set()
+                unique_entries: list[tuple[int, str]] = []
+                for pid, eps in entries:
+                    if pid not in seen_pids:
+                        seen_pids.add(pid)
+                        unique_entries.append((pid, eps))
+
                 lines.append(f"\n{rel}:")
-                for name in names[:20]:
-                    lines.append(f"  {name}")
+                for pid, eps in unique_entries[:20]:
+                    info = person_info[pid]
+                    name = info["name"]
+                    ptype = info["type"]
+                    all_roles: dict[str, str] = info["roles"]
+
+                    display = name
+                    if ptype == "组织":
+                        display = f"【{display}】"
+                    if eps:
+                        display += f"（EP {eps}）"
+
+                    other_roles = {r: e for r, e in all_roles.items() if r != rel}
+                    if other_roles:
+                        parts: list[str] = []
+                        for r, e in other_roles.items():
+                            part = r
+                            if e:
+                                part += f" EP {e}"
+                            parts.append(part)
+                        display += f" [兼任: {'、'.join(parts)}]"
+
+                    lines.append(f"  {display}")
+
+                if len(unique_entries) > 20:
+                    lines.append(f"  ...等 {len(unique_entries) - 20} 人")
+
             return {"name": "get_bangumi_subject_persons", "content": "\n".join(lines)}
         except BangumiAPIError as e:
             return {"name": "get_bangumi_subject_persons", "content": str(e)}

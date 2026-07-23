@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "id": "github.fffold.bangumi-browse-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Bangumi 动漫高手插件",
   "description": "接入 Bangumi (bgm.tv)，让你的 MaiBot 变身动画高手！支持新番速览、每日放送、单集吐槽、长评阅读、制作阵容查询，动画/游戏/书籍一网打尽。",
   "author": {
