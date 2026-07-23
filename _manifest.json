@@ -1,23 +1,26 @@
 {
   "manifest_version": 2,
-  "id": "fold.bangumi-browse-plugin",
+  "id": "github.fffold.bangumi-browse-plugin",
   "version": "1.0.0",
   "name": "Bangumi 浏览插件",
   "description": "为 MaiBot 提供 Bangumi (bgm.tv) 条目浏览能力，支持动画/游戏/书籍搜索、详情查询、人员阵容、季度放送、每日放送、吐槽箱和长评阅读。",
   "author": {
-    "name": "Fold",
-    "url": "https://github.com/Fold"
+    "name": "FFFold",
+    "url": "https://github.com/FFFold"
   },
   "license": "MIT",
   "urls": {
-    "repository": "https://github.com/Fold/bangumi_browse_plugin"
+    "repository": "https://github.com/FFFold/bangumi_browse_plugin",
+    "homepage": "https://github.com/FFFold/bangumi_browse_plugin",
+    "documentation": "https://github.com/FFFold/bangumi_browse_plugin/blob/main/README.md",
+    "issues": "https://github.com/FFFold/bangumi_browse_plugin/issues"
   },
   "host_application": {
     "min_version": "1.0.0",
     "max_version": "1.99.99"
   },
   "sdk": {
-    "min_version": "2.5.1",
+    "min_version": "2.0.0",
     "max_version": "2.99.99"
   },
   "dependencies": [
@@ -42,6 +45,7 @@
     "config.get"
   ],
   "i18n": {
-    "default_locale": "zh-CN"
+    "default_locale": "zh-CN",
+    "supported_locales": ["zh-CN"]
   }
 }

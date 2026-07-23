@@ -45,7 +45,7 @@ class RequestSection(PluginConfigBase):
 
     timeout: int = Field(default=15, description="HTTP 请求超时（秒）")
     user_agent: str = Field(
-        default="Fold/bangumi-browse-plugin (https://github.com/Fold/bangumi_browse_plugin)",
+        default="FFFold/bangumi-browse-plugin (https://github.com/FFFold/bangumi_browse_plugin)",
         description="Bangumi API 要求的 User-Agent，需包含项目链接",
     )
     proxy: str = Field(default="", description="HTTP 代理地址，留空则不使用")
