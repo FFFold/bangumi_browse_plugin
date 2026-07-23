@@ -40,10 +40,7 @@
       "version_spec": ">=4.9.0"
     }
   ],
-  "capabilities": [
-    "send.text",
-    "config.get"
-  ],
+  "capabilities": [],
   "i18n": {
     "default_locale": "zh-CN",
     "supported_locales": ["zh-CN"]
