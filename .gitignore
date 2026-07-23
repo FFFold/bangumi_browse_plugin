@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Plugin runner config
+/config.toml
+docs/superpowers
