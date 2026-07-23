@@ -282,7 +282,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
         description=(
             "获取某季度的放送/发售列表，默认按放送日期排序，默认仅返回 TV 动画。"
             "当用户问'这季度有什么新番'、'某年某月有什么动画'时使用。"
-            "传 show_all=true 可显示全部类型（含 CM/PV/OVA/剧场版/WEB 等）。"
+            "传 show_all=true 可显示全部分类（含 CM/PV/OVA/剧场版/WEB 等）。"
         ),
         parameters=[
             ToolParameterInfo(
@@ -304,9 +304,15 @@ class BangumiBrowsePlugin(MaiBotPlugin):
                 required=False,
             ),
             ToolParameterInfo(
+                name="category",
+                param_type=ToolParamType.INTEGER,
+                description="分类 (仅 anime 有效): 0=Other, 1=TV(默认), 2=OVA, 3=Movie, 5=WEB",
+                required=False,
+            ),
+            ToolParameterInfo(
                 name="show_all",
                 param_type=ToolParamType.BOOLEAN,
-                description="是否显示全部分类（含 CM/PV/OVA/剧场版/WEB）。默认 false，仅显示 TV 动画",
+                description="显示全部分类。传 true 则忽略 category 参数",
                 required=False,
             ),
             ToolParameterInfo(
@@ -327,6 +333,18 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             month_int = int(month) if month is not None else None
             subject_type = str(kwargs.get("subject_type") or "anime")
             show_all = kwargs.get("show_all")
+            _cat_raw = kwargs.get("category")
+            cat = None if show_all else (int(_cat_raw) if _cat_raw is not None else 1)
+            limit_val = kwargs.get("limit")
+            limit = int(limit_val) if limit_val is not None else 20
+
+            subjects = await self._api.browse_subjects(
+                subject_type=subject_type,
+                year=year,
+                month=month_int,
+                cat=cat,
+                limit=limit,
+            )
             cat = None if show_all else 1
             limit_val = kwargs.get("limit")
             limit = int(limit_val) if limit_val is not None else 20
