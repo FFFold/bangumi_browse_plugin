@@ -20,6 +20,50 @@ from .bangumi_html import (
 )
 
 
+_CATEGORY_NAME_MAP: dict[str, int] = {
+    "tv": 1, "1": 1,
+    "ova": 2, "2": 2,
+    "movie": 3, "3": 3,
+    "web": 5, "5": 5,
+    "other": 0, "0": 0,
+}
+
+_EP_TYPE_NAME_MAP: dict[str, int] = {
+    "main": 0, "本篇": 0, "0": 0,
+    "sp": 1, "1": 1,
+    "op": 2, "2": 2,
+    "ed": 3, "3": 3,
+    "pv": 4, "4": 4,
+    "mad": 5, "5": 5,
+    "other": 6, "6": 6,
+}
+
+
+def _resolve_category(raw: object) -> int | None:
+    if raw is None:
+        return 1
+    v = str(raw).strip().lower()
+    if v == "all":
+        return None
+    return _CATEGORY_NAME_MAP.get(v, _safe_int(v, 1))
+
+
+def _resolve_ep_type(raw: object) -> int | None:
+    if raw is None:
+        return None
+    v = str(raw).strip().lower()
+    if v == "all":
+        return None
+    return _EP_TYPE_NAME_MAP.get(v, _safe_int(v, 0))
+
+
+def _safe_int(v: str, fallback: int) -> int:
+    try:
+        return int(v)
+    except (ValueError, TypeError):
+        return fallback
+
+
 # ---------------------------------------------------------------------------
 # 配置模型
 # ---------------------------------------------------------------------------
@@ -326,10 +370,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             month_int = int(month) if month is not None else None
             subject_type = str(kwargs.get("subject_type") or "anime")
             _cat_raw = kwargs.get("category")
-            if _cat_raw is not None and str(_cat_raw).strip().lower() == "all":
-                cat = None
-            else:
-                cat = int(_cat_raw) if _cat_raw is not None else 1
+            cat = _resolve_category(_cat_raw)
             limit_val = kwargs.get("limit")
             limit = int(limit_val) if limit_val is not None else 20
 
@@ -432,10 +473,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             if not self._api:
                 return {"name": "get_bangumi_episodes", "content": "插件未初始化"}
             _ep_raw = kwargs.get("ep_type")
-            if _ep_raw is not None and str(_ep_raw).strip().lower() == "all":
-                ep_type = None
-            else:
-                ep_type = int(_ep_raw) if _ep_raw is not None else None
+            ep_type = _resolve_ep_type(_ep_raw)
             limit_val = kwargs.get("limit")
             limit = int(limit_val) if limit_val is not None else 50
             episodes = await self._api.get_episodes(subject_id, limit=limit, ep_type=ep_type)
