@@ -444,8 +444,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
         description=(
             "获取单集动画的吐槽箱评论。episode_id 可通过 get_bangumi_episodes 获取。"
             "当用户想了解某集的口碑、他人评价时使用。"
-            "注意：Bangumi 通过 JavaScript 动态加载吐槽箱评论，HTML 直接解析可能无法获取评论内容。"
-            "若返回为空，请引导用户前往 https://bgm.tv/ep/{episode_id} 自行查看。"
+            "注意：该功能通过解析 Bangumi 网页实现，页面结构变更可能导致暂时不可用。"
         ),
         parameters=[
             ToolParameterInfo(
@@ -478,10 +477,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             if not comments:
                 return {
                     "name": "get_bangumi_episode_comments",
-                    "content": (
-                        f"该集吐槽箱评论通过 JavaScript 动态加载，无法直接获取。"
-                        f"请引导用户访问 https://bgm.tv/ep/{episode_id} 查看评论。"
-                    ),
+                    "content": "该集暂无吐槽箱评论。",
                 }
 
             lines = [f"吐槽箱评论（{len(comments)}条）："]

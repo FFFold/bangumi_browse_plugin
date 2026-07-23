@@ -110,35 +110,28 @@ async def fetch_episode_comments(
     limit: int = 20,
     timeout: int = 15,
 ) -> list[EpisodeComment]:
-    """获取单集吐槽箱评论。
-
-    Bangumi 通过 JavaScript 动态加载评论，HTML 中 #comment_list 为空。
-    如果无法获取，返回空列表并提示用户。
-    """
+    """获取单集吐槽箱评论。"""
     html = await _fetch(client, f"{BGM_BASE}/ep/{episode_id}", timeout)
     soup = BeautifulSoup(html, "lxml")
 
-    # 尝试从页面提取可能的嵌入式评论数据
     comment_list = soup.select_one("#comment_list")
     if not comment_list:
         return []
 
-    replies = comment_list.select(".row_reply, .reply_item, div.reply")
-    if not replies:
-        return []
-
+    replies = comment_list.select(".row_reply")
     comments: list[EpisodeComment] = []
-    for reply in replies[:limit]:
-        user_el = reply.select_one("a.avatar, a.l, span.user")
-        username = ""
-        if user_el:
-            username = user_el.get("title", "") or user_el.get_text(strip=True)
 
-        content_el = reply.select_one(".reply_content, .message, .text, .content")
+    for reply in replies[:limit]:
+        user_el = reply.select_one(".inner > strong a.l")
+        username = user_el.get_text(strip=True) if user_el else ""
+
+        content_el = reply.select_one(".reply_content .message")
         content = content_el.get_text("\n", strip=True) if content_el else ""
 
-        time_el = reply.select_one("small.greytext, .time, .date, span.tip")
+        time_el = reply.select_one(".post_actions small")
         time_str = time_el.get_text(strip=True) if time_el else ""
+        # 提取时间："#1 - 2026-6-25 00:07" -> "2026-6-25 00:07"
+        time_str = re.sub(r"^#\d+\s*[-–—]\s*", "", time_str)
 
         comments.append(EpisodeComment(
             username=username,
