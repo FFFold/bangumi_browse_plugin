@@ -114,6 +114,7 @@ class BangumiAPI:
         sort: str = "date",
         limit: int = 20,
         offset: int = 0,
+        cat: Optional[str] = None,
     ) -> list[Subject]:
         """浏览条目（按季度等筛选）。"""
         type_int = _TYPE_MAP.get(subject_type, 2)
@@ -127,6 +128,8 @@ class BangumiAPI:
             params["year"] = year
         if month is not None:
             params["month"] = month
+        if cat is not None:
+            params["cat"] = cat
 
         data = await self._get("/subjects", **params)
         items: list[dict[str, Any]] = data.get("data", [])
