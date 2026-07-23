@@ -349,7 +349,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             ToolParameterInfo(
                 name="category",
                 param_type=ToolParamType.STRING,
-                description="分类 (仅 anime 有效): 0=Other, 1=TV(默认), 2=OVA, 3=Movie, 5=WEB, all=全部",
+                description="分类 (仅 anime 有效): 1/TV(默认), 2/OVA, 3/Movie, 5/WEB, 0/Other, all=全部",
                 required=False,
             ),
             ToolParameterInfo(
@@ -457,7 +457,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             ToolParameterInfo(
                 name="ep_type",
                 param_type=ToolParamType.STRING,
-                description="剧集类型: 0=本篇, 1=SP, 2=OP, 3=ED, 4=PV, 5=MAD, 6=Other, all=全部(默认)",
+                description="剧集类型: 0/main/本篇, 1/SP, 2/OP, 3/ED, 4/PV, 5/MAD, 6/Other, all=全部(默认)",
                 required=False,
             ),
             ToolParameterInfo(
