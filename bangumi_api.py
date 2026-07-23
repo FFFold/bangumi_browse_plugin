@@ -140,14 +140,17 @@ class BangumiAPI:
         subject_id: int,
         limit: int = 100,
         offset: int = 0,
+        ep_type: Optional[int] = None,
     ) -> list[Episode]:
         """获取剧集列表。"""
-        data = await self._get(
-            "/episodes",
-            subject_id=subject_id,
-            limit=limit,
-            offset=offset,
-        )
+        params: dict[str, Any] = {
+            "subject_id": subject_id,
+            "limit": limit,
+            "offset": offset,
+        }
+        if ep_type is not None:
+            params["type"] = ep_type
+        data = await self._get("/episodes", **params)
         items: list[dict[str, Any]] = data.get("data", [])
         return [Episode(**item) for item in items]
 

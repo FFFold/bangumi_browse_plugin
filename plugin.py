@@ -425,6 +425,12 @@ class BangumiBrowsePlugin(MaiBotPlugin):
                 required=True,
             ),
             ToolParameterInfo(
+                name="ep_type",
+                param_type=ToolParamType.STRING,
+                description="剧集类型: 0=本篇, 1=SP, 2=OP, 3=ED, 4=PV, 5=MAD, 6=Other, all=全部(默认)",
+                required=False,
+            ),
+            ToolParameterInfo(
                 name="limit",
                 param_type=ToolParamType.INTEGER,
                 description="返回数量，默认 50",
@@ -436,9 +442,14 @@ class BangumiBrowsePlugin(MaiBotPlugin):
         try:
             if not self._api:
                 return {"name": "get_bangumi_episodes", "content": "插件未初始化"}
+            _ep_raw = kwargs.get("ep_type")
+            if _ep_raw is not None and str(_ep_raw).strip().lower() == "all":
+                ep_type = None
+            else:
+                ep_type = int(_ep_raw) if _ep_raw is not None else None
             limit_val = kwargs.get("limit")
             limit = int(limit_val) if limit_val is not None else 50
-            episodes = await self._api.get_episodes(subject_id, limit=limit)
+            episodes = await self._api.get_episodes(subject_id, limit=limit, ep_type=ep_type)
             if not episodes:
                 return {"name": "get_bangumi_episodes", "content": "未找到该条目的剧集信息。"}
 
