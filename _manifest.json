@@ -3,7 +3,7 @@
   "id": "github.fffold.bangumi-browse-plugin",
   "version": "1.0.0",
   "name": "Bangumi 浏览插件",
-  "description": "为 MaiBot 提供 Bangumi (bgm.tv) 条目浏览能力，支持动画/游戏/书籍搜索、详情查询、人员阵容、季度放送、每日放送、吐槽箱和长评阅读。",
+  "description": "接入 Bangumi (bgm.tv)，让你的 MaiBot 变身动画高手！支持新番速览、每日放送、单集吐槽、长评阅读、制作阵容查询，动画/游戏/书籍一网打尽。",
   "author": {
     "name": "FFFold",
     "url": "https://github.com/FFFold"
