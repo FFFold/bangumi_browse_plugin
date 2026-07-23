@@ -340,17 +340,6 @@ class BangumiBrowsePlugin(MaiBotPlugin):
                 cat=cat,
                 limit=limit,
             )
-            cat = None if show_all else 1
-            limit_val = kwargs.get("limit")
-            limit = int(limit_val) if limit_val is not None else 20
-
-            subjects = await self._api.browse_subjects(
-                subject_type=subject_type,
-                year=year,
-                month=month_int,
-                cat=cat,
-                limit=limit,
-            )
             if not subjects:
                 period = f"{year}年{month_int}月" if month_int else f"{year}年"
                 return {"name": "get_bangumi_season", "content": f"未找到 {period} 的{subject_type}条目。"}
