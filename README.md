@@ -1,41 +1,40 @@
 # Bangumi 浏览插件
 
-接入 [Bangumi](https://bgm.tv)，让你的 MaiBot 变身动画高手。自动查询新番速览、每日放送、单集吐槽、长评阅读、制作阵容——动画、游戏、书籍一网打尽。
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Manifest](https://img.shields.io/badge/manifest-v2-green)](_manifest.json)
 
-## 功能
+接入 [Bangumi](https://bgm.tv)，让你的 MaiBot 变身动画高手。新番速览、每日放送、单集吐槽、长评阅读、制作阵容——动画、游戏、书籍一网打尽。
 
-本插件提供 9 个 Tool，LLM 可在聊天中按需调用：
+## 功能一览
 
-| Tool | 功能 | 数据源 |
-|------|------|--------|
-| `search_bangumi_subject` | 搜索条目（支持按类型筛选） | REST API |
-| `get_bangumi_subject` | 获取条目详情（评分、简介、标签等） | REST API |
-| `get_bangumi_subject_persons` | 获取制作人员阵容 | REST API |
-| `get_bangumi_season` | 获取季度放送/发售列表 | REST API |
-| `get_bangumi_calendar` | 获取本周每日放送时间表 | HTML 解析 |
-| `get_bangumi_episodes` | 获取剧集列表 | REST API |
-| `get_bangumi_episode_comments` | 获取单集吐槽箱评论 | HTML 解析 |
-| `get_bangumi_subject_relations` | 获取关联作品（前传/续作等） | REST API |
-| `get_bangumi_subject_reviews` | 获取作品长评列表/详情 | HTML 解析 |
+| Tool | 能做什么 | 来源 |
+|------|---------|------|
+| `search_bangumi_subject` | 按关键词搜索条目，支持按类型筛选 | API |
+| `get_bangumi_subject` | 查看完整详情：评分、放送时间、集数、简介、标签 | API |
+| `get_bangumi_subject_persons` | 制作阵容：监督、脚本、音乐、CV 等 | API |
+| `get_bangumi_season` | 某季新番速览，默认 TV，可按分类过滤 | API |
+| `get_bangumi_calendar` | 本周每日放送时间表 | 网页 |
+| `get_bangumi_episodes` | 剧集列表，可按本篇/SP/OP 等类型筛选 | API |
+| `get_bangumi_episode_comments` | 单集吐槽箱——看大家怎么评价这一集 | 网页 |
+| `get_bangumi_subject_relations` | 前传、续作、番外等关联作品 | API |
+| `get_bangumi_subject_reviews` | 作品长评列表 + 单篇全文阅读 | 网页 |
 
 ## 安装
 
-将插件目录放入 MaiBot 的 `plugins/` 目录下：
-
+```bash
+cd MaiBot/plugins
+git clone https://github.com/FFFold/bangumi_browse_plugin
 ```
-plugins/bangumi_browse_plugin/
-```
 
-重启 MaiBot 或通过 WebUI 插件管理加载插件。
+重启 MaiBot 或通过 WebUI 加载即可。
 
 ## 配置
 
-首次加载后，Runner 会自动生成 `config.toml`。可配置项：
+首次加载后自动生成 `config.toml`：
 
 ```toml
 [plugin]
 enabled = true
-config_version = "1.0.0"
 
 [request]
 timeout = 15
@@ -43,22 +42,22 @@ user_agent = "FFFold/bangumi-browse-plugin (https://github.com/FFFold/bangumi_br
 proxy = ""
 ```
 
-- `timeout`: HTTP 请求超时（秒）
-- `user_agent`: Bangumi API 要求设置 User-Agent，建议包含项目链接
-- `proxy`: 可选 HTTP 代理地址（如 `http://127.0.0.1:7890`）
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| `timeout` | HTTP 请求超时（秒） | `15` |
+| `user_agent` | Bangumi API 要求的 UA，须含项目链接 | 见上 |
+| `proxy` | HTTP 代理，如 `http://127.0.0.1:7890` | 空 |
 
-## 使用
+## 对话示例
 
-插件仅提供 Tool 接口，由 LLM 自动调用。用户在对话中询问动画/游戏相关问题时，LLM 会主动使用这些工具。
-
-示例对话场景：
-
-- "帮我查一下攻壳机动队的评分" → `search_bangumi_subject` + `get_bangumi_subject`
-- "这季度有什么新番？" → `get_bangumi_season`
-- "今天有什么动画更新？" → `get_bangumi_calendar`
-- "巨人最终季第三集评价怎么样？" → `search_bangumi_subject` + `get_bangumi_episodes` + `get_bangumi_episode_comments`
-- "攻壳机动队有续作吗？" → `search_bangumi_subject` + `get_bangumi_subject_relations`
-- "看看攻壳机动队的长评" → `get_bangumi_subject_reviews`
+| 用户说 | Bot 会调用 |
+|--------|-----------|
+| "帮我查一下攻壳机动队的评分" | `search_bangumi_subject` → `get_bangumi_subject` |
+| "这季度有什么新番？" | `get_bangumi_season`（7+8+9 月） |
+| "今天有什么动画更新？" | `get_bangumi_calendar` |
+| "巨人最终季第三集评价怎么样？" | `search_bangumi_subject` → `get_bangumi_episodes` → `get_bangumi_episode_comments` |
+| "攻壳机动队有续作吗？" | `search_bangumi_subject` → `get_bangumi_subject_relations` |
+| "看看攻壳的长评" | `get_bangumi_subject_reviews` |
 
 ## 依赖
 
@@ -66,15 +65,14 @@ proxy = ""
 - `beautifulsoup4` >= 4.11.0
 - `lxml` >= 4.9.0
 
-以上依赖在 `_manifest.json` 中声明，MaiBot 会自动安装。
+已声明在 `_manifest.json`，MaiBot 自动安装。
 
 ## 注意事项
 
-- 吐槽箱评论通过解析 Bangumi 网页实现，若 Bangumi 页面结构变更可能导致暂时不可用。
-- 吐槽箱评论通过 JavaScript 动态加载，HTML 直接解析可能无法获取评论内容。若返回为空，LLM 会引导用户访问 Bangumi 页面自行查看。
-- 插件为只读设计，不涉及用户登录、收藏等写操作。
-- 向 Bangumi API 发送请求时请遵守其使用条款，必须设置合理的 User-Agent。
+- 每日放送、吐槽箱、长评通过解析网页实现，页面结构变更可能暂时不可用
+- 纯只读设计，无需登录，不涉及收藏等写操作
+- 请遵守 [Bangumi API 使用条款](https://github.com/bangumi/api/blob/master/docs-raw/user%20agent.md)
 
 ## 许可证
 
-MIT
+MIT © FFFold
