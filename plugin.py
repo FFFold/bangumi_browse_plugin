@@ -1,4 +1,4 @@
-"""Bangumi 浏览插件 — 为 MaiBot 提供 Bangumi 条目浏览能力。"""
+"""Bangumi 动漫高手插件 — 为 MaiBot 提供 Bangumi 条目浏览能力。"""
 
 from __future__ import annotations
 
@@ -96,7 +96,7 @@ class RequestSection(PluginConfigBase):
 
 
 class BangumiBrowseConfig(PluginConfigBase):
-    """Bangumi 浏览插件配置。"""
+    """Bangumi 动漫高手插件配置。"""
 
     plugin: PluginSection = Field(default_factory=PluginSection)
     request: RequestSection = Field(default_factory=RequestSection)
@@ -108,7 +108,7 @@ class BangumiBrowseConfig(PluginConfigBase):
 
 
 class BangumiBrowsePlugin(MaiBotPlugin):
-    """Bangumi 浏览插件。"""
+    """Bangumi 动漫高手插件。"""
 
     config_model = BangumiBrowseConfig
 
@@ -123,14 +123,14 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             follow_redirects=True,
         )
         self._api = BangumiAPI(self._client, timeout=cfg.timeout)
-        self.ctx.logger.info("Bangumi 浏览插件已加载")
+        self.ctx.logger.info("Bangumi 动漫高手插件已加载")
 
     async def on_unload(self) -> None:
         if self._client:
             await self._client.aclose()
             self._client = None
         self._api = None
-        self.ctx.logger.info("Bangumi 浏览插件已卸载")
+        self.ctx.logger.info("Bangumi 动漫高手插件已卸载")
 
     async def on_config_update(self, scope: str, config_data: dict[str, Any], version: str) -> None:
         del scope
@@ -145,7 +145,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
             follow_redirects=True,
         )
         self._api = BangumiAPI(self._client, timeout=cfg.timeout)
-        self.ctx.logger.info("Bangumi 浏览插件配置已热更新")
+        self.ctx.logger.info("Bangumi 动漫高手插件配置已热更新")
 
     # ----------------------------------------------------------------
     # Tool 1: search_bangumi_subject

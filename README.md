@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🎬 Bangumi 浏览插件
+# 🎬 Bangumi 动漫高手插件
 
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 [![Manifest](https://img.shields.io/badge/manifest-v2-7c3aed?style=flat-square)](_manifest.json)

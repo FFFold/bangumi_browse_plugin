@@ -1,4 +1,4 @@
-"""Bangumi 浏览插件数据模型。"""
+"""Bangumi 动漫高手插件数据模型。"""
 
 from __future__ import annotations
 
