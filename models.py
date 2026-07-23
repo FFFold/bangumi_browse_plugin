@@ -2,9 +2,24 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+
+
+_SUBJECT_TYPE_MAP: dict[int, str] = {
+    1: "book",
+    2: "anime",
+    3: "music",
+    4: "game",
+    6: "real",
+}
+
+
+def _to_type_name(v: object) -> str:
+    if isinstance(v, int):
+        return _SUBJECT_TYPE_MAP.get(v, str(v))
+    return str(v or "")
 
 
 class RatingInfo(BaseModel):
@@ -33,6 +48,11 @@ class Subject(BaseModel):
     rating: Optional[RatingInfo] = None
     rank: int = 0
     images: Optional[ImageInfo] = None
+
+    @field_validator("type", mode="before")
+    @classmethod
+    def _normalize_type(cls, v: object) -> str:
+        return _to_type_name(v)
 
 
 class SubjectDetail(Subject):
@@ -66,6 +86,11 @@ class SubjectPerson(BaseModel):
     type: str = ""
     career: list[str] = []
     positions: list[str] = []
+
+    @field_validator("type", mode="before")
+    @classmethod
+    def _normalize_type(cls, v: object) -> str:
+        return _to_type_name(v)
 
 
 class Episode(BaseModel):
