@@ -39,7 +39,7 @@ config_version = "1.0.0"
 
 [request]
 timeout = 15
-user_agent = "Fold/bangumi-browse-plugin (https://github.com/Fold/bangumi_browse_plugin)"
+user_agent = "FFFold/bangumi-browse-plugin (https://github.com/FFFold/bangumi_browse_plugin)"
 proxy = ""
 ```
 
@@ -70,7 +70,7 @@ proxy = ""
 
 ## 注意事项
 
-- 每日放送、吐槽箱、长评功能通过解析 Bangumi 网页实现，若 Bangumi 页面结构变更可能导致暂时不可用。
+- 吐槽箱评论通过解析 Bangumi 网页实现，若 Bangumi 页面结构变更可能导致暂时不可用。
 - 吐槽箱评论通过 JavaScript 动态加载，HTML 直接解析可能无法获取评论内容。若返回为空，LLM 会引导用户访问 Bangumi 页面自行查看。
 - 插件为只读设计，不涉及用户登录、收藏等写操作。
 - 向 Bangumi API 发送请求时请遵守其使用条款，必须设置合理的 User-Agent。

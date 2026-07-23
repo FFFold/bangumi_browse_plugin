@@ -88,7 +88,9 @@ class BangumiAPI:
             "sort": sort,
         }
         if subject_type:
-            body["filter"] = {"type": [subject_type]}
+            type_id = _TYPE_MAP.get(subject_type)
+            if type_id:
+                body["filter"] = {"type": [type_id]}
 
         data = await self._post("/search/subjects", body, limit=limit, offset=offset)
         items: list[dict[str, Any]] = data.get("data", [])

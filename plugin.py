@@ -422,7 +422,7 @@ class BangumiBrowsePlugin(MaiBotPlugin):
 
             lines = ["剧集列表："]
             for ep in episodes:
-                ep_label = f"EP{ep.ep}" if ep.ep else f"SP{int(ep.sort)}" if ep.type > 0 else f"#{int(ep.sort)}"
+                ep_label = f"EP{ep.ep}" if ep.ep is not None else f"SP{int(ep.sort)}" if ep.type > 0 else f"#{int(ep.sort)}"
                 name = ep.name_cn or ep.name
                 airdate_str = f" 放送: {ep.airdate}" if ep.airdate else ""
                 comment_str = f" {ep.comment}条评论" if ep.comment else ""
