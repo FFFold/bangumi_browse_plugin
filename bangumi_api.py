@@ -114,7 +114,7 @@ class BangumiAPI:
         sort: str = "date",
         limit: int = 20,
         offset: int = 0,
-        cat: Optional[str] = None,
+        cat: Optional[int] = 1,
     ) -> list[Subject]:
         """浏览条目（按季度等筛选）。"""
         type_int = _TYPE_MAP.get(subject_type, 2)
