@@ -78,7 +78,7 @@ class PluginSection(PluginConfigBase):
     __ui_order__ = 0
 
     enabled: bool = Field(default=True, description="是否启用插件")
-    config_version: str = Field(default="1.0.0", description="配置版本")
+    config_version: str = Field(default="1.1.0", description="配置版本")
 
 
 class RequestSection(PluginConfigBase):
@@ -96,11 +96,33 @@ class RequestSection(PluginConfigBase):
     proxy: str = Field(default="", description="HTTP 代理地址，留空则不使用")
 
 
+class ToolsSection(PluginConfigBase):
+    """工具可见性配置。"""
+
+    __ui_label__ = "工具"
+    __ui_icon__ = "wrench"
+    __ui_order__ = 2
+
+    force_visible: bool = Field(
+        default=False,
+        description="将本插件全部 Tool 设为常驻可见（visible）；关闭则跟随宿主默认的 deferred 行为",
+        json_schema_extra={
+            "label": "工具常驻可见",
+            "hint": (
+                "默认关闭：工具按宿主设计以 deferred 方式注册，模型需先 tool_search 检索后调用；"
+                "开启后 9 个工具直接进入每轮工具表，模型可即时看到并调用，"
+                "代价约为每次 planner 请求多 ~750 token。修改后需重载插件方可生效。"
+            ),
+        },
+    )
+
+
 class BangumiBrowseConfig(PluginConfigBase):
     """Bangumi 动漫高手插件配置。"""
 
     plugin: PluginSection = Field(default_factory=PluginSection)
     request: RequestSection = Field(default_factory=RequestSection)
+    tools: ToolsSection = Field(default_factory=ToolsSection)
 
 
 # ---------------------------------------------------------------------------
@@ -147,6 +169,34 @@ class BangumiBrowsePlugin(MaiBotPlugin):
         )
         self._api = BangumiAPI(self._client, timeout=cfg.timeout)
         self.ctx.logger.info("Bangumi 动漫高手插件配置已热更新")
+
+    def get_components(self) -> list[dict[str, Any]]:
+        """收集组件，并按配置决定是否将全部 Tool 设为常驻可见。
+
+        默认（``tools.force_visible = false``）原样返回基类收集结果，与宿主
+        默认的 deferred 行为零差异；开启后在组件声明层为每个 Tool 写入
+        ``metadata["visibility"] = "visible"``，使其直接进入每轮工具表。
+
+        注意：宿主仅在插件注册阶段读取一次组件声明，修改该配置后需重载插件
+        才能生效（配置热更新不会触发组件重新注册）。
+        """
+        try:
+            force_visible = bool(self.config.tools.force_visible)
+        except Exception:
+            # 配置尚未注入（如极早期注册）时按默认行为原样返回
+            return super().get_components()
+        components = super().get_components()
+        if not force_visible:
+            return components
+        for component in components:
+            if str(component.get("type", "")).upper() != "TOOL":
+                continue
+            metadata = component.get("metadata")
+            if not isinstance(metadata, dict):
+                metadata = {}
+                component["metadata"] = metadata
+            metadata["visibility"] = "visible"
+        return components
 
     # ----------------------------------------------------------------
     # Tool 1: search_bangumi_subject

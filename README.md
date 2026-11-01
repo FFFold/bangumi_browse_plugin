@@ -52,6 +52,9 @@ enabled = true
 timeout = 15
 user_agent = "FFFold/bangumi-browse-plugin (https://github.com/FFFold/bangumi_browse_plugin)"
 proxy = ""
+
+[tools]
+force_visible = false
 ```
 
 | 配置项 | 说明 | 默认值 |
@@ -59,6 +62,7 @@ proxy = ""
 | `timeout` | HTTP 请求超时（秒） | `15` |
 | `user_agent` | Bangumi API 要求的 UA，须含项目链接 | 见上 |
 | `proxy` | HTTP 代理，如 `http://127.0.0.1:7890` | 空 |
+| `[tools] force_visible` | 将 9 个工具设为常驻可见（visible），开启后模型可即时看到全部工具；关闭则跟随宿主默认的 deferred 行为（按需 `tool_search` 检索）。**修改后需重载插件生效** | `false` |
 
 ---
 
